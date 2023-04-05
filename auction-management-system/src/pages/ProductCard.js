@@ -1,15 +1,15 @@
 import "./style/ProductCard.css";
-import image from './camera.png';
 
-const ProductCard = () =>
+const ProductCard = (props) =>
 { return (
     <div className="product-card">
     <div className="card-top">
-    <img src={image} alt="logo"/>
+    <img src={props.image} alt="logo"/>
     </div>
     <div className="card-info">
-        <h4 className="title">Camera</h4>
-        <p className="price">Starting Price : 5300 L.E</p>
+        <h4 className="title">{props.name}</h4>
+        <p className="price">{props.desc}</p>
+        <p className="category">{props.category}</p>
         <button>Bid Now</button>
     </div>
 
