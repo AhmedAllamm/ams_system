@@ -1,12 +1,14 @@
 //update data (to change from rejected to accepted )
 
+const connection = require("../../db/connection");
+
 app.put('/Users/:id', (req,res)=>{
 
   const { id }= req.params;
     
  const data =req.body;
     
-     con.query("update users set ? where id = ?",[{ Status : data.Status},id],(err,result)=>{
+     connection.query("update users set ? where id = ?",[{ Status : data.Status},id],(err,result)=>{
     
  if (err){
     
