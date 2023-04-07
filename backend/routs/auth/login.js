@@ -7,9 +7,9 @@ const login = async ( req, res) => {
     if(!email || ! password) return res.json ({ status : "error", error: "Please Enter youer email and password" });
     else{
         connection.query('SELECT * FROM users WHERE email = ?', [email], async (err, result) => {
-            if (err) {
+            if (result.length==0) {
                 res.statusCode=500;
-                res.json({message:"user not found",})
+                res.json({message:"user not found"})
             };
             if (result[0]) { 
                 console.log("password compare : "+ result[0].password );
