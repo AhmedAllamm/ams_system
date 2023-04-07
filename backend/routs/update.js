@@ -1,6 +1,6 @@
 //update data (to change from rejected to accepted )
 
-const connection = require("../../db/connection");
+const connection = require("../db/connection");
 
 app.put('/Users/:id', (req,res)=>{
 
