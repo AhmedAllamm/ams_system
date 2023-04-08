@@ -1,27 +1,38 @@
 import ProductCard from "./ProductCard";
-import "./style/ProductList.css"
-import {Products} from "../core/data/Products";
+import "./style/ProductList.css";
+import React from "react";
+import Products from "../core/data/Products";
+
+
 
 const ProductList = () =>
-{ const AuctionProducts = Products;
+{
+  
+  
   const displayProducts = () =>
   {
-    return AuctionProducts.map((item) =>{
-        return  <ProductCard key = {item.id} name={item.name} desc= {item.description} image = {item.image} category ={item.category}/>
+    return Products.map((item) =>{
+        return  <ProductCard key = {item.id} id ={item.id} name={item.name} desc= {item.description} image = {item.image} category ={item.category}/>
 
      })
 
   }  
-    return (
-        <div className="product-list">
-        {
-            displayProducts()
+    return ( <div className="product-list">
+    {
+        displayProducts()
 
-        }
-       
-        </div>
+    }
+   
+    </div>)
+    
+      
+         
         
-    );
+
+     
+    
+        
+    
 };
 
 export default ProductList;
