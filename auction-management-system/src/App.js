@@ -1,7 +1,8 @@
 import Header from './shared/Header';
 import Footer from './shared/Footer';
 import './style/App.css';
-import ProductList from "./pages/ProductList";
+import {Outlet} from 'react-router-dom'
+import React from 'react';
 
 
 
@@ -9,7 +10,7 @@ const App = () => {
   return (
     <>
      <Header/>
-     <ProductList/>
+     <Outlet/>
      <Footer/>
     </>
   )

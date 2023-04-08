@@ -1,7 +1,11 @@
+import { Link } from "react-router-dom";
 import "./style/ProductCard.css";
+import React from "react";
+
 
 const ProductCard = (props) =>
-{ return (
+{  
+    return (
     <div className="product-card">
     <div className="card-top">
     <img src={props.image} alt="logo"/>
@@ -10,7 +14,11 @@ const ProductCard = (props) =>
         <h4 className="title">{props.name}</h4>
         <p className="price">{props.desc}</p>
         <p className="category">{props.category}</p>
-        <button>Bid Now</button>
+        <button>
+        <Link to={"/product-list/"+props.id}> Bid Now</Link>
+        
+       </button>
+       
     </div>
 
     </div>

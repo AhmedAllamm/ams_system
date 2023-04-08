@@ -42,13 +42,16 @@
     background-color: #5f0d14;
     border: 0px;
     text-align: center;
-    color: aliceblue;
     padding: 5px 10px;
     cursor: pointer;
     
 
 }
-.product-card .card-info button:hover {
+.product-card .card-info button a {
+    color: aliceblue;
+    text-decoration: none;
+}
+.product-card .card-info button a:hover {
     color: black;
 }
 

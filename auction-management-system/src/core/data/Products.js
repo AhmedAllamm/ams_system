@@ -4,8 +4,11 @@ import img3 from "./images/gun.png"
 import img4 from "./images/knife.png"
 import img5 from "./images/ball.png"
 import img6 from "./images/coin.png"
-export const Products = [
-    
+
+
+
+export const Products =[
+
         {
             id: 1,
             name:  'Camera',
@@ -49,13 +52,21 @@ export const Products = [
             image:img6,
             category :"Artifacts",
         },
+    ]
+
+   export default Products;
+
+
+    
+   
+    
         
 
     
    
-];
+
  
-   
+
     
 
 
