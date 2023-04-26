@@ -2,6 +2,8 @@ const connection = require("../../db/connection");
 const bcrypt = require('bcrypt');
 const router=require('express').Router();
 
+const auction = [];
+
 router.post("/", function (req, res) {
     const data =req.body ;
     console.log(data)
