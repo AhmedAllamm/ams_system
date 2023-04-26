@@ -10,7 +10,7 @@ app.put('/Users/:id', (req,res)=>{
     
      connection.query("update users set ? where id = ?",[{ Status : data.Status},id],(err,result)=>{
     
- if (err){
+   if (err){
     
      res.statusCode=500;
     
