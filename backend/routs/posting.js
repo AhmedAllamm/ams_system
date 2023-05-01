@@ -49,7 +49,7 @@ router.get('/', (req, res) => {
     }
   });
 });
-/*
+
 // Finish auctions that have reached their end date
 router.post('/finish', (req, res) => {
   const now = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -66,5 +66,5 @@ router.post('/finish', (req, res) => {
     }
   });
 });
-*/
+
 module.exports = router;
