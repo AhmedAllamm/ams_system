@@ -7,7 +7,7 @@ router.get("/:id", async (req, res) => {
     try {
         const query = util.promisify(connection.query).bind(connection);
         const activityHistory = await query(
-        "SELECT auction.name, transactions.bidder_id ,transactions.amount FROM auction JOIN transactions ON auction.id = transactions.auction_id WHERE auction.id = ?",
+        "SELECT auction.name, transactions.bidder_id ,transactions.amount FROM auction JOIN transactions ON auction.id = transactions.auction_id WHERE auction.saller_id = ?",
         [req.params.id]
         );
         if (!activityHistory || activityHistory.length === 0) {
