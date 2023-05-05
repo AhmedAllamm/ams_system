@@ -15,7 +15,7 @@ const ProductCard = (props) =>
         <p className="price">{props.desc}</p>
         <p className="category">{props.category}</p>
         <button>
-        <Link to={"/product-list/"+props.id}> Bid Now</Link>
+        <Link to={"/auctions/"+props.id}> Bid Now</Link>
         
        </button>
        

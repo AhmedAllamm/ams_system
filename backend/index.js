@@ -12,7 +12,15 @@ const posting = require('./routs/posting');
 const result = require('./routs/result');
 const show =require("./routs/show")
 const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
+const update = require("./routs/update");
+// const wonAuctions = require ('./routs/wonAuctions.js');
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  next();
+});
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
@@ -25,9 +33,9 @@ app.use('/result',result);
 app.use("/posting",posting);
 app.use('/show',show);
 app.use('/registration',register);
-
 app.use("/auction", auction);
-
+app.use("/update", update)
+// app.use("/won-auctions", wonAuctions)
 
 app.use('/auctions',bidOnAuction);
 app.listen(4000,"localhost",()=>{

@@ -17,13 +17,13 @@ router.get("/:id", async (req, res) => {
             [req.params.id]
         );
         if (!activityHistory || activityHistory.length === 0) {
-            res.status(404).json({ message: "No activity history found for this seller." });
+            res.status(404).json({ status: "error", error: "No activity history found for this seller." });
         } else {
             res.status(200).json(activityHistory);
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ status: "error", error: "Internal server error." });
     }
 });
 
