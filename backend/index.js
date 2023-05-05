@@ -12,6 +12,7 @@ const posting = require('./routs/posting');
 const result = require('./routs/result');
 const show =require("./routs/show")
 const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
+const update = require("./routs/update");
 // const wonAuctions = require ('./routs/wonAuctions.js');
 
 app.use(function(req, res, next) {
@@ -33,6 +34,7 @@ app.use("/posting",posting);
 app.use('/show',show);
 app.use('/registration',register);
 app.use("/auction", auction);
+app.use("/update", update)
 // app.use("/won-auctions", wonAuctions)
 
 app.use('/auctions',bidOnAuction);
