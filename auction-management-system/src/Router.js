@@ -14,11 +14,11 @@ import { ChosenProduct } from "./pages/ChosenProduct";
         children: [
             
                   {
-                    path: "",
+                    path: "/auctions",
                     element: <ProductList/>
                   },
                   {
-                    path: "/product-list/:id",
+                    path: "/auctions/:id",
                     element: <ChosenProduct/>
                   },
                   {
@@ -28,6 +28,10 @@ import { ChosenProduct } from "./pages/ChosenProduct";
                     {
                       path: "/contact",
                       element: <div>contact</div>
+                    },
+                    {
+                      path: "/update",
+                      element: <div>update</div>
                     },
                 ]
 

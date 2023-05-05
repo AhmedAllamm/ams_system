@@ -4,8 +4,6 @@ const connection = require('../db/connection');
 const bcrypt = require('bcrypt');
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Get request => get all auctions
 router.get("/", (req, res) => {

@@ -2,6 +2,8 @@ const connection = require("../../db/connection");
 const router=require('express').Router();
 const { v4 } = require('uuid')
 const util = require("util");
+const bidder = require("../../middleware/bidder");
+const upload = require("../../middleware/uploadImages");
 
 // SHOW ALL AUCTIONS + SEARCH BY NAME AND CATEGORY
   router.get('/', async (req, res) => {
@@ -16,14 +18,22 @@ const util = require("util");
   
  
 // TEST INSERT INTO DB
-  router.post("/", (req, res) =>
-  {
-    const data = req.body;
-    connection.query("insert into auction set ?", {name: data.name, description:data.description, startTime:data.startTime,endTime:data.endTime, category:data.category, current_bid:data.current_bid, saller_id:data.saller_id}, (err, result, fields) =>
-    {
-      res.json({message: 'Auction Created'});
-    });
-  });
+   router.post("/", (req, res) =>
+   {
+     const data = req.body;
+     connection.query("insert into auction set ?", {
+      image_url:data.image_url,
+      name: data.name,
+      description:data.description, 
+      start_date:data.start_date,
+      end_date:data.end_date, 
+      category:data.category, 
+      current_bid:data.current_bid, 
+      saller_id:data.saller_id}, (err, result, fields) =>
+     {
+       res.json({message: 'Auction Created'});
+     });
+   });
 
 // SHOW SPECIFIC AUCTION ON ADDRESS BAR
   router.get('/:id', (req, res) => {
@@ -34,8 +44,7 @@ const util = require("util");
         res.json(result[0]);
       }
       else {
-        res.statusCode = 404;
-        res.json({message: 'Auction not found'})
+        res.status(404).json({status: "error", error: 'Auction not found'})
       }
       
     })
@@ -43,7 +52,8 @@ const util = require("util");
   });
 
 // UPDATE BID PRICE WITH CONDITION
-  router.put("/:id", (req, res) => {
+  router.put("/:id",
+   async (req, res) => {
     const { id } = req.params;
     const data = req.body;
   
@@ -52,28 +62,25 @@ const util = require("util");
       [id],
       (err, result) => {
         if (err) {
-          res.statusCode = 500;
-          res.json({ message: "Price Update Failed" });
+          res.status(500).json({status: "error", error: 'Price Update Failed'});
         } else if (result.length === 0) {
-          res.statusCode = 404;
-          res.json({ message: "Auction not found" });
+          res.status(404).json({status: "error", error: 'Auction not found'});
         } else {
           const current_bid = result[0].current_bid;
           if (data.current_bid > current_bid) {
             connection.query(
-              "UPDATE auction SET current_bid = ? WHERE id = ?",
-              [data.current_bid, id],
+              "UPDATE auction LEFT JOIN transactions ON auction.id = transactions.auction_id SET auction.current_bid = ?, transactions.amount = ? WHERE auction.id = ?",
+              [data.current_bid, data.current_bid, id],
               (err, result) => {
                 if (err) {
-                  res.statusCode = 500;
-                  res.json({ message: "Price Update Failed" });
+                  res.status(500).json({status: "error", error: 'Price Update Failed'});
                 } else {
                   res.json({ message: "Updated" });
                 }
               }
             );
           } else {
-            res.json({ message: "Price can't be lower than bid" });
+            res.status(500).json({ status: "error", error: "Price can't be lower than bid" });
           }
         }
       }
