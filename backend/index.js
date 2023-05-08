@@ -14,7 +14,6 @@ const result = require('./routs/result');
 const show =require("./routs/show")
 const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
 const update = require("./routs/update.js");
-// const wonAuctions = require ('./routs/wonAuctions.js');
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -37,7 +36,6 @@ app.use('/show',show);
 app.use('/registration',register);
 app.use("/auction", auction);
 app.use("/update", update)
-// app.use("/won-auctions", wonAuctions)
 
 app.use('/auctions',bidOnAuction);
 app.listen(4000,"localhost",()=>{

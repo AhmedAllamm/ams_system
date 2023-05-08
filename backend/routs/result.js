@@ -13,7 +13,7 @@ async(req,res)=>{
     
         if(req.query.search){
     
-            search=`where id LIKE '%${req.query.search}%'`;
+    search=`where id LIKE '%${req.query.search}%'`;
     
         }
     
