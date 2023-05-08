@@ -27,10 +27,11 @@ router.post("/", async function (req, res) {
             token: crypto.randomBytes(16).toString("hex"),
             phone : data.phone,
             type : data.type,
+            id : result[1],
           };
           connection.query("INSERT INTO users set ?",
           userData,
-          (error,result,fields)=>{ 
+          async(error,result,fields)=>{ 
             if(error){
               res.statusCode=500;  
               res.status(500).json({
@@ -39,8 +40,13 @@ router.post("/", async function (req, res) {
               });
                 }
             else{
-              delete userData.password;
-              res.status(200).json(userData);
+              const query = util.promisify(connection.query).bind(connection); 
+              const user = await query("select * from users where email = ?", [
+                data.email,
+              ]);
+              delete user[0].password;
+              delete user[0].status;
+              res.status(200).json(user[0]);
                 }
           })}
       });

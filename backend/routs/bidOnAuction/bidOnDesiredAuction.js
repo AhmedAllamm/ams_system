@@ -13,6 +13,9 @@ const upload = require("../../middleware/uploadImages");
       search = `where name LIKE '%${req.query.search}%' or category LIKE '%${req.query.search}%'`;
     }
     const auctions = await query(`select * from auction ${search}`);
+    auctions.map ((auction) => {
+      auction.image_url = "http://" + req.hostname + ":4000/" + auction.image_url;
+    });
     res.status(200).json(auctions);
   });
   
@@ -36,18 +39,16 @@ const upload = require("../../middleware/uploadImages");
    });
 
 // SHOW SPECIFIC AUCTION ON ADDRESS BAR
-  router.get('/:id', (req, res) => {
-    const {id} = req.params;
-    connection.query("select * from auction where ?", {id : id}, (err, result, fields) =>
-    {
-      if (result[0]){
-        res.json(result[0]);
-      }
-      else {
-        res.status(404).json({status: "error", error: 'Auction not found'})
-      }
-      
-    })
+  router.get('/:id', async(req, res) => {
+    const query = util.promisify(connection.query).bind(connection);
+    const auction = await query("select * from auction where id = ?", [
+      req.params.id,
+    ]);
+    if (!auction[0]) {
+      res.status(404).json({ status: "error", error: "movie not found !" });
+    }
+    auction[0].image_url = "http://" + req.hostname + ":4000/" + auction[0].image_url;
+    res.status(200).json(auction[0]);
  
   });
 

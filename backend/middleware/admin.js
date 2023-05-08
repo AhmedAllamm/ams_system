@@ -1,4 +1,4 @@
-const connection = require("../db/dbConnection");
+const connection = require("../db/connection");
 const util = require("util"); // helper
 
 const admin = async (req, res, next) => {
@@ -9,7 +9,7 @@ const admin = async (req, res, next) => {
     next();
   } else {
     res.status(403).json({
-      msg: "you are not authorized to access this route !",
+      message: "you are not authorized to access this route !",
     });
   }
 };
