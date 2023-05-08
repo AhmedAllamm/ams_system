@@ -8,6 +8,10 @@ const register = require('./routs/auth/registration');
 const login = require('./routs/auth/login');
 const logout = require('./routs/auth/logout');
 
+const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
+const viewWonAuctions= require('./routs/viewWonAuctions.js');
+
+
 const posting = require('./routs/posting');
 const result = require('./routs/result');
 const show =require("./routs/show")
@@ -38,6 +42,9 @@ app.use("/update", update)
 // app.use("/won-auctions", wonAuctions)
 
 app.use('/auctions',bidOnAuction);
+
+app.use("/won-auctions",viewWonAuctions );
+
 app.listen(4000,"localhost",()=>{
 
     console.log("server is running");
