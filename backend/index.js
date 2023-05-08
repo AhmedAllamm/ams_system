@@ -8,7 +8,13 @@ const register = require('./routs/auth/registration');
 const login = require('./routs/auth/login');
 const logout = require('./routs/auth/logout');
 
+
 //const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
+const viewWonAuctions= require('./routs/viewWonAuctions.js');
+
+
+
+const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
 const viewWonAuctions= require('./routs/viewWonAuctions.js');
 
 
