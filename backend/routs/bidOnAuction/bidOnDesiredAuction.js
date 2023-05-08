@@ -117,7 +117,7 @@ const moment = require("moment");
                   connection.query(
                     "INSERT INTO transactions SET ?",
                     {
-                      bidder_id: data.bidder_id,
+                      bidder_id: data.transaction.bidder_id,
                       auction_id: id,
                       amount: data.current_bid,
                       data: now,

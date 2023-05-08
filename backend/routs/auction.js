@@ -17,7 +17,9 @@ router.get("/", (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Get request => get a spacifice action by ID auctions
-router.get("/:id", (req, res) => {
+router.get("/:id",
+saller, 
+async(req, res) => {
     const id = req.params.id;
     connection.query(
       "SELECT * FROM auction WHERE id = ?",
@@ -184,8 +186,6 @@ async(req, res) => {
     message: "auction updated successfully",
   });
  
-   
-
   }
   catch (error){
     console.log(error)

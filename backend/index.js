@@ -16,14 +16,12 @@ const viewWonAuctions= require('./routs/viewWonAuctions.js');
 
 
 const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
-const viewWonAuctions= require('./routs/viewWonAuctions.js');
 
 
 
 const posting = require('./routs/posting');
 const result = require('./routs/result');
 const show =require("./routs/show")
-const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
 const update = require("./routs/update.js");
 
 app.use(function(req, res, next) {

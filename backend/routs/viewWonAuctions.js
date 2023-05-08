@@ -47,7 +47,7 @@ router.get('/:id', (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
       return;
     }
-    
+
     // Retrieve purchase history for the user
     const historyQuery = `
       SELECT auction.*, transactions .amount
@@ -62,6 +62,12 @@ router.get('/:id', (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
         return;
       }
+      historyResults.map ((item) => {
+        item.image_url = "http://" + req.hostname + ":4000/" + item.image_url;
+      });
+      wonResults.map ((item) => {
+        item.image_url = "http://" + req.hostname + ":4000/" + item.image_url;
+      })
       
       res.json({
         won: wonResults,
