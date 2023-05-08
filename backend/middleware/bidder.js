@@ -9,7 +9,7 @@ const bidder = async (req, res, next) => {
     next();
   } else {
     res.status(403).json({
-      msg: "you are not authorized to access this route !",
+      message: "you are not authorized to access this route !",
     });
   }
 };

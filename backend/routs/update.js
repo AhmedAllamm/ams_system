@@ -1,28 +1,48 @@
-//update data (to change from rejected to accepted )
-const router = require('express').Router();
-const connection = require('../db/connection');
+const connection = require("../db/connection");
+const router= require('express').Router ();
+const util = require("util"); 
+const admin = require('../middleware/admin');
 
-router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  const { Status } = req.body;
+router.get('/',
+admin,
+async (req, res) => {
+  try {
+    const query = util.promisify(connection.query).bind(connection);
+    const users = await query('SELECT id, email, type, status FROM users WHERE type != ?', ['admin']);
 
-  connection.query(
-    'UPDATE users SET status = ? WHERE id = ?',
-    [Status, id],
-    (err, result) => {
-      if (err) {
-        res.statusCode = 500;
-        res.json({ msg: 'rejected' });
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
+
+router.put('/:id',
+admin,
+async (req, res) => {
+  try {
+    const query = util.promisify(connection.query).bind(connection);
+    const user = await query("SELECT id, email, type, status FROM users WHERE id = ?", [
+      req.params.id,
+    ]);
+    if (user.length == 0) {
+      res.status(404).json({message: "User not found." });
+    } else {
+      if (req.body.accept) {
+        connection.query("UPDATE users SET status = 'active' WHERE id = ?", user[0].id);
+        res.status(200).json({ message: "User Accepted" });
+      } else if (req.body.reject) {
+        connection.query("UPDATE users SET status = 'in-active' WHERE id = ?", user[0].id);
+        res.status(200).json({ message: "User Rejected" });
       } else {
-        const numRowsUpdated = result.affectedRows;
-        if (numRowsUpdated > 0) {
-          res.json({ msg: 'accepted' });
-        } else {
-          res.json({ msg: 'rejected' });
-        }
+        res.status(400).json({ message: "Invalid request." });
       }
     }
-  );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to update user status" });
+  }
 });
+
 
 module.exports = router;

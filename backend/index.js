@@ -2,6 +2,7 @@ const express = require('express');
 var bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+const cors = require('cors');
 
 const auction = require('./routs/auction.js');
 const register = require('./routs/auth/registration');
@@ -16,8 +17,7 @@ const posting = require('./routs/posting');
 const result = require('./routs/result');
 const show =require("./routs/show")
 const bidOnAuction = require('./routs/bidOnAuction/bidOnDesiredAuction');
-const update = require("./routs/update");
-// const wonAuctions = require ('./routs/wonAuctions.js');
+const update = require("./routs/update.js");
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -28,7 +28,8 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
-
+app.use(cors());
+app.use(express.static("upload"));
 
 app.use(express.static(path.join(__dirname,"")));
 app.use("/login",login);
@@ -39,7 +40,6 @@ app.use('/show',show);
 app.use('/registration',register);
 app.use("/auction", auction);
 app.use("/update", update)
-// app.use("/won-auctions", wonAuctions)
 
 app.use('/auctions',bidOnAuction);
 
