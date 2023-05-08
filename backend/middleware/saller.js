@@ -5,7 +5,7 @@ const saller = async (req, res, next)=>{
     const query =util.promisify(connection.query).bind(connection)
     const {token } = req.headers;
     const saller = await query("select * from users where token = ?",[token]);
-    if(saller[0]&&saller[0].role=="1"){
+    if(saller[0] && saller[0].type == "seller"){
         next();
     }
     

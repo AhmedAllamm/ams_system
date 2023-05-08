@@ -4,8 +4,6 @@ const connection = require('../db/connection');
 const bcrypt = require('bcrypt');
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Get request => get all auctions
 router.get("/", (req, res) => {
@@ -133,9 +131,15 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
     const id = req.params.id;
     const data = req.body;
+    if (!data.image_url	||!data.name || !data.description || !data.start_date || !data.end_date|| !data.category || !data.current_bid) {
+      return res.status(500).json({
+          message: "Invalid request. Please provide a name for the auction"
+
+      })
+  }
     connection.query(
-      "UPDATE auction SET  image_url = ? ,name = ?, description = ?, start_date = ?, end_date = ?,category = ? ,current_bid = ?,saller_id = ? WHERE id = ?",
-      [ data.image_url ,data.name, data.description, data.start_date, data.end_date, data.category,data.current_bid, data.saller_id, id],
+      "UPDATE auction SET  image_url = ? ,name = ?, description = ?, start_date = ?, end_date = ?,category = ? ,current_bid = ? WHERE id = ?",
+      [ data.image_url ,data.name, data.description, data.start_date, data.end_date, data.category,data.current_bid, id],
       (error, result, fields) => {
         if (error) {
           console.error(error); // log error message to console
