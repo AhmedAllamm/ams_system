@@ -2,6 +2,9 @@ const router = require('express').Router();
 const saller = require('../middleware/saller');
 const connection = require('../db/connection');
 const bcrypt = require('bcrypt');
+const upload = require("../middleware/uploadImages");
+const util = require("util"); // helper
+const fs = require("fs"); // file system
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -14,7 +17,9 @@ router.get("/", (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Get request => get a spacifice action by ID auctions
-router.get("/:id", (req, res) => {
+router.get("/:id",
+saller, 
+async(req, res) => {
     const id = req.params.id;
     connection.query(
       "SELECT * FROM auction WHERE id = ?",
@@ -36,12 +41,6 @@ router.get("/:id", (req, res) => {
     );
   });
   
-  
-
-
-
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Post request => save an auction
@@ -68,38 +67,56 @@ router.get("/:id", (req, res) => {
 });*/
 
 // Post request => save an auction
-router.post("/", (req, res) => {
+router.post("/",
+saller,
+upload.single("image_url"),
+async (req, res) => {
+  try {
     const data = req.body;
-    console.log(data)
-    // Check if data object exists and has a name property
-    if (!data.image_url	||!data.name || !data.description || !data.start_date || !data.end_date|| !data.category || !data.current_bid|| !data.saller_id) {
+    const startDate = new Date(data.start_date);
+    const endDate = new Date(data.end_date);
+
+    if (!data.name || !data.description || data.name.trim() === ''|| !data.start_date || !data.end_date|| !data.category || !data.current_bid|| !data.saller_id) {
         return res.status(500).json({
             message: "Invalid request. Please provide a name for the auction"
 
         })
     }
-
-    connection.query("INSERT INTO auction SET ?", {
-        image_url: data.image_url,
-        name: data.name,
-        description: data.description,
-        start_date: data.start_date,
-        end_date: data.end_date,
-        category: data.category,
-        current_bid: data.current_bid,
-        saller_id: data.saller_id
-      }, (error, result, fields) => {
-        if (error) {
-          console.error(error); // log error message to console
-          res.status(500).json({
-            message: "Failed to save the auction"
-          });
-        } else {
-          res.json({
-            message: "Auction created!"
-          });
-        }
+    if (endDate <= startDate) {
+      return res.status(400).json({ message: "Invalid request. End date must be after start date." });
+    }
+    if (endDate <= new Date()) {
+      return res.status(400).json({ message: "Invalid request. Auction has already ended." });
+    }
+    if (!req.file) {
+      return res.status(400).json({
+        errors: [
+          {
+            message: "Image is Required",
+          },
+        ],
       });
+    }
+    const auction = {
+      name: data.name,
+      description: data.description,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      category: data.category,
+      current_bid: data.current_bid,
+      image_url: req.file.filename,
+      saller_id: data.saller_id
+    };
+    const query = util.promisify(connection.query).bind(connection);
+    await query("INSERT INTO auction set ? ", auction);
+    res.status(200).json({
+      message : "Auction Created!"
+    });
+  }
+  catch(err){
+    res.status(500).json(err);
+  }
+    
     });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,36 +145,55 @@ router.post("/", (req, res) => {
 
 
 
-router.put("/:id", (req, res) => {
+router.put("/:id",
+saller,
+upload.single("image_url"),
+async(req, res) => {
+  try {
     const id = req.params.id;
     const data = req.body;
-    if (!data.image_url	||!data.name || !data.description || !data.start_date || !data.end_date|| !data.category || !data.current_bid) {
+    if (!data.name || !data.description || !data.start_date || !data.end_date|| !data.category || !data.current_bid) {
       return res.status(500).json({
           message: "Invalid request. Please provide a name for the auction"
 
       })
   }
-    connection.query(
-      "UPDATE auction SET  image_url = ? ,name = ?, description = ?, start_date = ?, end_date = ?,category = ? ,current_bid = ? WHERE id = ?",
-      [ data.image_url ,data.name, data.description, data.start_date, data.end_date, data.category,data.current_bid, id],
-      (error, result, fields) => {
-        if (error) {
-          console.error(error); // log error message to console
-          res.status(500).json({
-            message: "Failed to update the auction"
-          });
-        } else if (result.affectedRows === 0) {
-          res.status(404).json({
-            message: `Auction with ID ${id} not found`
-          });
-        } else {
-          res.json({
-            message: "Auction updated!"
-          });
-        }
-      }
-    );
+  const query = util.promisify(connection.query).bind(connection);
+  const auction = await query("select * from auction where id = ?", [
+    req.params.id,
+  ]);
+  if (!auction[0]) {
+    res.status(404).json({ ms: "auction not found !" });
+  }
+
+  const auctionObj = {
+    name: data.name,
+    description: data.description,
+    start_date: data.start_date,
+    end_date: data.end_date,
+    category: data.category,
+    current_bid: data.current_bid,
+    saller_id: data.saller_id
+  };
+
+  if (req.file) {
+    auctionObj.image_url = req.file.filename;
+    fs.unlinkSync("./upload/" + auction[0].image_url); // delete old image
+  }
+  await query("update auction set ? where id = ?", [auctionObj, auction[0].id]);
+
+  res.status(200).json({
+    message: "auction updated successfully",
   });
+ 
+  }
+  catch (error){
+    console.log(error)
+    res.status(500).json({
+      message: "failed to update auction"
+    });
+  }}
+  );
   
 
 /*// Put request => modify a specific auction
@@ -182,16 +218,17 @@ router.put("/:id", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Delete request => delete a movie
-router.delete("/:id", (req, res) => {
+router.delete("/:id",
+saller
+ ,async(req, res) => {
     const { id } = req.params;
     connection.query("delete from auction where ?", { id: id }, (err, result) => {
         if (err) {
-            res.statusCode = 500;
-            res.json({
-                message: "failed to delete the auction",
+            res.status(500).json({ status: "error",
+                error: "failed to delete the auction",
             });
         }
-        res.json({
+        res.status(200).json({
             message: "auction deleted successfully"
         })
     });
